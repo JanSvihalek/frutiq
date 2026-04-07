@@ -4,10 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'dart:io';
-import 'package:flutter/foundation.dart'; // <--- TENTO NOVÝ IMPORT NÁM UMOŽNÍ POZNAT WEB
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-// Importy našich nových rozdělených stránek
 import 'stranky/prihlasovaci_stranka.dart';
 import 'stranky/dashboard.dart';
 

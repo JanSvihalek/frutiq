@@ -16,6 +16,8 @@ dependencies:
   http: ^1.2.0
   desktop_window: ^0.4.0
   shared_preferences: ^2.2.0
+  image_picker: ^1.0.7
+  firebase_storage: ^12.4.10
 
 dev_dependencies:
   flutter_test:
