@@ -16,7 +16,6 @@ import 'stranky/dashboard.dart';
 // ============================================================================
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 final ValueNotifier<String> windUnitNotifier = ValueNotifier('km/h');
-
 // Převede hexadecimální kód barvy na Flutter Color
 Color hexToColor(String hexString) {
   final buffer = StringBuffer();
