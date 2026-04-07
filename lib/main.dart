@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart'; // <--- TENTO NOVÝ IMPORT NÁM UMOŽNÍ POZNAT WEB
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Importy našich nových rozdělených stránek
@@ -30,7 +31,7 @@ Color hexToColor(String hexString) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  
+
   final prefs = await SharedPreferences.getInstance();
   
   final isDark = prefs.getBool('isDarkMode') ?? false; 
@@ -38,9 +39,12 @@ void main() async {
   
   windUnitNotifier.value = prefs.getString('windUnit') ?? 'km/h';
 
-  if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-    await DesktopWindow.setWindowSize(const Size(375, 812));
-    await DesktopWindow.setMinWindowSize(const Size(375, 812));
+  // OPRAVA PRO WEB: Kód pro změnu okna se spustí JEN, když nejsme na webu
+  if (!kIsWeb) {
+    if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+      await DesktopWindow.setWindowSize(const Size(375, 812));
+      await DesktopWindow.setMinWindowSize(const Size(375, 812));
+    }
   }
   
   runApp(const MyApp());
