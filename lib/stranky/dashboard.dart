@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import '../main.dart';
 import 'encyklopedie.dart';
 import 'statistiky_nastaveni.dart';
+import 'detail_stromu.dart'; // <-- NOVÝ IMPORT DENÍKU
 
 // ============================================================================
 // HLAVNÍ ROZCESTNÍK APLIKACE (S NAVIGAČNÍ LIŠTOU DOLE)
@@ -528,132 +529,143 @@ class _OrchardPageState extends State<OrchardPage> {
 
               allTreatments.sort((a, b) => (b['date'] as Timestamp).compareTo(a['date'] as Timestamp));
 
-              return Container(
-                key: ValueKey(docId), 
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: themeColor.withOpacity(0.15), width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4),
+              // TADY JE TA ZMĚNA: Přidán GestureDetector a přesunutí ValueKey
+              return GestureDetector(
+                key: ValueKey(docId), // ReorderableListView potřebuje klíč tady nahoře
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TreeDetailPage(docId: docId, treeData: tree),
                     ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(width: 6, color: themeColor),
-                        
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            species, 
-                                            style: TextStyle(
-                                              fontSize: 20, fontWeight: FontWeight.w900, color: themeColor,
-                                            ),
-                                          ),
-                                          Text(
-                                            "$variety • $count ks ($treeSize) • ${tree['locationName']}",
-                                            style: TextStyle(
-                                              color: Colors.blueGrey.shade300, fontSize: 12, fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(emoji, style: const TextStyle(fontSize: 26)), 
-                                        const SizedBox(width: 8),
-                                        IconButton(
-                                          icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
-                                          onPressed: () => _confirmDelete(docId, species, variety),
-                                        ),
-                                        ReorderableDragStartListener(
-                                          index: index,
-                                          child: const Icon(Icons.drag_indicator, color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-                                
-                                FutureBuilder<List<dynamic>>(
-                                  future: Future.wait([
-                                    _calculateSUTData(tree['lat'], tree['lon']), 
-                                    _getWeatherForecast(tree['lat'], tree['lon']), 
-                                  ]),
-                                  builder: (context, snap) {
-                                    if (!snap.hasData) return const LinearProgressIndicator(minHeight: 2);
-                                    
-                                    final sutData = snap.data![0];
-                                    final weather = snap.data![1];
-                                    double sut = sutData['sut'];
-
-                                    return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: themeColor.withOpacity(0.15), width: 1),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(width: 6, color: themeColor),
+                          
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(_getWeatherEmoji(weather['code'])),
-                                            const SizedBox(width: 5),
-                                            ValueListenableBuilder<String>(
-                                              valueListenable: windUnitNotifier,
-                                              builder: (context, windUnit, child) {
-                                                return Text(
-                                                  "${weather['temp']}°C • ${_formatWindSync((weather['wind'] as num).toDouble())} • 💧 ${weather['precipitation_today']} mm",
-                                                  style: TextStyle(
-                                                    fontSize: 12, color: Colors.blueGrey.shade700, fontWeight: FontWeight.bold,
-                                                  ),
-                                                );
-                                              },
+                                            Text(
+                                              species, 
+                                              style: TextStyle(
+                                                fontSize: 20, fontWeight: FontWeight.w900, color: themeColor,
+                                              ),
+                                            ),
+                                            Text(
+                                              "$variety • $count ks ($treeSize) • ${tree['locationName']}",
+                                              style: TextStyle(
+                                                color: Colors.blueGrey.shade300, fontSize: 12, fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ],
                                         ),
-                                        const Divider(height: 24, thickness: 0.5),
-                                        
-                                        if (species == 'Broskvoň' || species == 'Meruňka') ...[
-                                          _buildSutSection(
-                                            sut, sutData['date1200'], weather['wind'] / 3.6, weather['code'],
-                                            themeColor, species, isDarkMode, count, treeSize,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(emoji, style: const TextStyle(fontSize: 26)), 
+                                          const SizedBox(width: 8),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete_outline, color: Colors.grey, size: 20),
+                                            onPressed: () => _confirmDelete(docId, species, variety),
                                           ),
-                                        ] else ...[
-                                          _buildGeneralTreeAdvice(
-                                            species, DateTime.now().month, isDarkMode, count, treeSize,
+                                          ReorderableDragStartListener(
+                                            index: index,
+                                            child: const Icon(Icons.drag_indicator, color: Colors.grey),
                                           ),
                                         ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  
+                                  FutureBuilder<List<dynamic>>(
+                                    future: Future.wait([
+                                      _calculateSUTData(tree['lat'], tree['lon']), 
+                                      _getWeatherForecast(tree['lat'], tree['lon']), 
+                                    ]),
+                                    builder: (context, snap) {
+                                      if (!snap.hasData) return const LinearProgressIndicator(minHeight: 2);
+                                      
+                                      final sutData = snap.data![0];
+                                      final weather = snap.data![1];
+                                      double sut = sutData['sut'];
 
-                                        _buildSprayRecordRow(docId, allTreatments, themeColor),
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(_getWeatherEmoji(weather['code'])),
+                                              const SizedBox(width: 5),
+                                              ValueListenableBuilder<String>(
+                                                valueListenable: windUnitNotifier,
+                                                builder: (context, windUnit, child) {
+                                                  return Text(
+                                                    "${weather['temp']}°C • ${_formatWindSync((weather['wind'] as num).toDouble())} • 💧 ${weather['precipitation_today']} mm",
+                                                    style: TextStyle(
+                                                      fontSize: 12, color: Colors.blueGrey.shade700, fontWeight: FontWeight.bold,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          const Divider(height: 24, thickness: 0.5),
+                                          
+                                          if (species == 'Broskvoň' || species == 'Meruňka') ...[
+                                            _buildSutSection(
+                                              sut, sutData['date1200'], weather['wind'] / 3.6, weather['code'],
+                                              themeColor, species, isDarkMode, count, treeSize,
+                                            ),
+                                          ] else ...[
+                                            _buildGeneralTreeAdvice(
+                                              species, DateTime.now().month, isDarkMode, count, treeSize,
+                                            ),
+                                          ],
 
-                                        const SizedBox(height: 16),
-                                        _buildAlertSystem(weather, isDarkMode),
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ],
+                                          _buildSprayRecordRow(docId, allTreatments, themeColor),
+
+                                          const SizedBox(height: 16),
+                                          _buildAlertSystem(weather, isDarkMode),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
