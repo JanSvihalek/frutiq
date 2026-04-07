@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "418045850760",
+    "project_id": "frutiq-b8729",
+    "storage_bucket": "frutiq-b8729.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418045850760:android:026424339b02ee5d575b3d",
+        "android_client_info": {
+          "package_name": "com.example.frutiq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt-2pbYAFSL3aDRWbno6G0L3BKUX9xBNw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
