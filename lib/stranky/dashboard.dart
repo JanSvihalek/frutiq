@@ -435,7 +435,7 @@ class _OrchardPageState extends State<OrchardPage> {
           children: [
             const Text(
               'Frutiq',
-              style: TextStyle(fontWeight: FontWeight.w900, color: Colors.green, fontSize: 25),
+              style: TextStyle(fontWeight: FontWeight.w900, color: Colors.green, fontSize: 20),
             ),
             Text(
               'Vaše digitální zahrada', // Sem můžeš napsat jakýkoliv podtitulek
@@ -451,7 +451,7 @@ class _OrchardPageState extends State<OrchardPage> {
             onPressed: widget.onNavigateToEncyclopedia,
             icon: const Icon(Icons.add_circle_outline, color: Colors.green),
             label: const Text(
-              "Přidat plodinu",
+              "Přidat",
               style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
             ),
           ),
