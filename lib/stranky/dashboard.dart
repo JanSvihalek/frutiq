@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart'; // OPRAVENÝ IMPORT
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'package:firebase_core/firebase_core.dart';
-// Důležité: Importujeme `main.dart` kvůli globálním proměnným a `hexToColor`
+
+// Importujeme `main.dart` kvůli globálním proměnným a `hexToColor`
 import '../main.dart';
 import 'encyklopedie.dart';
 import 'statistiky_nastaveni.dart';
-import 'detail_stromu.dart'; // <-- NOVÝ IMPORT DENÍKU
+import 'detail_stromu.dart';
 
 // ============================================================================
 // HLAVNÍ ROZCESTNÍK APLIKACE (S NAVIGAČNÍ LIŠTOU DOLE)
@@ -428,9 +429,19 @@ class _OrchardPageState extends State<OrchardPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Frutiq - Zahrada',
-          style: TextStyle(fontWeight: FontWeight.w900, color: Colors.green),
+        // TADY JE TA ZMĚNA: Použití Column pro titulek a podtitulek
+        title: Column(
+          mainAxisSize: MainAxisSize.min, // Zaručí, že se sloupec neroztáhne
+          children: [
+            const Text(
+              'Frutiq',
+              style: TextStyle(fontWeight: FontWeight.w900, color: Colors.green, fontSize: 25),
+            ),
+            Text(
+              'Vaše digitální zahrada', // Sem můžeš napsat jakýkoliv podtitulek
+              style: TextStyle(fontSize: 12, color: Colors.green.shade700, fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -529,9 +540,8 @@ class _OrchardPageState extends State<OrchardPage> {
 
               allTreatments.sort((a, b) => (b['date'] as Timestamp).compareTo(a['date'] as Timestamp));
 
-              // TADY JE TA ZMĚNA: Přidán GestureDetector a přesunutí ValueKey
               return GestureDetector(
-                key: ValueKey(docId), // ReorderableListView potřebuje klíč tady nahoře
+                key: ValueKey(docId),
                 onTap: () {
                   Navigator.push(
                     context,

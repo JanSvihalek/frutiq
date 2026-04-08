@@ -6,6 +6,9 @@ import 'package:desktop_window/desktop_window.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart'; // <--- NOVÝ IMPORT FONTŮ
+
+// Importy našich nových rozdělených stránek
 import 'stranky/prihlasovaci_stranka.dart';
 import 'stranky/dashboard.dart';
 
@@ -14,6 +17,7 @@ import 'stranky/dashboard.dart';
 // ============================================================================
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 final ValueNotifier<String> windUnitNotifier = ValueNotifier('km/h');
+
 // Převede hexadecimální kód barvy na Flutter Color
 Color hexToColor(String hexString) {
   final buffer = StringBuffer();
@@ -36,7 +40,7 @@ void main() async {
   
   windUnitNotifier.value = prefs.getString('windUnit') ?? 'km/h';
 
-  // OPRAVA PRO WEB: Kód pro změnu okna se spustí JEN, když nejsme na webu
+  // Kód pro změnu okna se spustí JEN, když nejsme na webu
   if (!kIsWeb) {
     if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
       await DesktopWindow.setWindowSize(const Size(375, 812));
@@ -72,6 +76,9 @@ class MyApp extends StatelessWidget {
                 ),
                 useMaterial3: true, 
                 scaffoldBackgroundColor: const Color(0xFFF4F6F2), 
+                
+                // TADY APLIKUJEME MODERNÍ FONT 'POPPINS' PRO SVĚTLÝ REŽIM
+                fontFamily: GoogleFonts.poppins().fontFamily,
               ),
               
               darkTheme: ThemeData(
@@ -81,6 +88,9 @@ class MyApp extends StatelessWidget {
                 ),
                 useMaterial3: true,
                 scaffoldBackgroundColor: const Color(0xFF121411), 
+                
+                // TADY APLIKUJEME MODERNÍ FONT 'POPPINS' PRO TMAVÝ REŽIM
+                fontFamily: GoogleFonts.poppins().fontFamily,
               ),
               
               home: const AuthGate(),
